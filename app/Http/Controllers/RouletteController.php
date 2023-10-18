@@ -17,7 +17,7 @@ class RouletteController extends Controller
         $randomizer = rand(1,$roulleteResultsCount);
         
         return response()->json([
-            $rouletteResults,
+            'data' => $rouletteResults,
             'result' => $randomizer,
         ]);
         
