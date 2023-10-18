@@ -12,7 +12,14 @@ class RouletteController extends Controller
      */
     public function index()
     {
-        return Roulette::select('id','photoURL','textContent')->get();
+        $rouletteResults = Roulette::select('id','photoURL','textContent')->get();
+        $roulleteResultsCount = Roulette::all()->count();
+        $randomizer = rand(1,$roulleteResultsCount);
+        
+        return response()->json([
+            $rouletteResults,
+            'result' => $randomizer,
+        ]);
         
     }
 
