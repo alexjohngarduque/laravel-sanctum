@@ -14,27 +14,9 @@ class AuthController extends Controller
 {
     use HttpResponses;
 
-    public function login(LoginUserRequest $request)
-    {
-        $request->validated($request->all());
-        $user = null;
-        
-        if(Auth::attempt($request->only(['email', 'password']))){
-            $user = User::where('email', $request->email)->first();
-        }else if(Auth::attempt($request->only(['name', 'password']))){
-            $user = User::where('name', $request->name)->first();
-        }else if ( !Auth::attempt($request->only(['email', 'password'])) || !Auth::attempt($request->only(['name', 'password']))) {
-            return $this->error('', 'Credentials do not match', 401);
-        } 
-        Auth::login($user);
-        return $this->success([
-            'user' => $user,
-            'token' => $user->createToken('API Token of ' . $user->name)->plainTextToken //CREATES A TOKEN ONCE LOGGED IN
-        ],'Logged-in Successfully.');
-        //return ('This is my login method');
-    }
 
-    public function loginv2(LoginUserRequest $request) //login using name or email
+
+    public function login(LoginUserRequest $request) //login using name or email
     {
         $credentials = $request->getCredentials();
 

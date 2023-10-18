@@ -23,17 +23,15 @@ class LoginUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required_without:email'],
-            'email' => ['required_without:name',], //remove if you want 1 field that appends both name or email (note: replace the required_without -> required)
-            'password' => ['required', 'string',],
+            'name' => ['required'],
+            'password' => ['required'],
         ];
     }
 
     public function getCredentials()
     {
-        // The form field for providing username or password
-        // have name of "username", however, in order to support
-        // logging users in with both (username and email)
+        // in order to support
+        // logging users in with both (name and email)
         // we have to check if user has entered one or another
         $name = $this->get('name');
 
