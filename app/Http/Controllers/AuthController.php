@@ -14,8 +14,6 @@ class AuthController extends Controller
 {
     use HttpResponses;
 
-
-
     public function login(LoginUserRequest $request) //login using name or email
     {
         $credentials = $request->getCredentials();
