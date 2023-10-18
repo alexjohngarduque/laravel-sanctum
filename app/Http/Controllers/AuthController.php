@@ -23,15 +23,33 @@ class AuthController extends Controller
             $user = User::where('email', $request->email)->first();
         }else if(Auth::attempt($request->only(['name', 'password']))){
             $user = User::where('name', $request->name)->first();
-        }else if ( !Auth::attempt($request->only(['email', 'password'])) || !Auth::attempt($request->only(['name', 'password'])) ) {
+        }else if ( !Auth::attempt($request->only(['email', 'password'])) || !Auth::attempt($request->only(['name', 'password']))) {
             return $this->error('', 'Credentials do not match', 401);
-        }
-
+        } 
+        Auth::login($user);
         return $this->success([
             'user' => $user,
             'token' => $user->createToken('API Token of ' . $user->name)->plainTextToken //CREATES A TOKEN ONCE LOGGED IN
         ],'Logged-in Successfully.');
         //return ('This is my login method');
+    }
+
+    public function loginv2(LoginUserRequest $request) //login using name or email
+    {
+        $credentials = $request->getCredentials();
+
+        if(!Auth::validate($credentials)):
+            return $this->error('', 'Credentials do not match', 401);
+        endif;
+
+        $user = Auth::getProvider()->retrieveByCredentials($credentials);
+
+        Auth::login($user);
+        return $this->success([
+            'user' => $user,
+            'token' => $user->createToken('API Token of ' . $user->name)->plainTextToken //CREATES A TOKEN ONCE LOGGED IN
+        ],'Logged-in Successfully.');
+
     }
 
     public function register(StoreUserRequest $request)

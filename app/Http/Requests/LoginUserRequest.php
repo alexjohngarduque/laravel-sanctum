@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 
 class LoginUserRequest extends FormRequest
 {
@@ -23,8 +24,37 @@ class LoginUserRequest extends FormRequest
     {
         return [
             'name' => ['required_without:email'],
-            'email' => ['required_without:name'],
+            'email' => ['required_without:name',], //remove if you want 1 field that appends both name or email (note: replace the required_without -> required)
             'password' => ['required', 'string',],
         ];
     }
+
+    public function getCredentials()
+    {
+        // The form field for providing username or password
+        // have name of "username", however, in order to support
+        // logging users in with both (username and email)
+        // we have to check if user has entered one or another
+        $name = $this->get('name');
+
+        if ($this->isEmail($name)) {
+            return [
+                'email' => $name,
+                'password' => $this->get('password')
+            ];
+        }
+
+        return $this->only('name', 'password');
+    }
+
+    private function isEmail($param)
+    {
+        $factory = $this->container->make(ValidationFactory::class);
+
+        return ! $factory->make(
+            ['name' => $param],
+            ['name' => 'email']
+        )->fails();
+    }
+
 }

@@ -12,6 +12,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 //Public Routes
 Route::post('/login',[AuthController::class, 'login']);
+Route::post('/loginv2',[AuthController::class, 'loginv2']);
 Route::post('/register',[AuthController::class, 'register']);
 
 //Protected Routes
